@@ -41,15 +41,8 @@ static void ConvertFilePath( const char* in_filename, char* out_filename )
 
 CFileData::CFileData( const std::string& filename,const char* access, u32 offset, u32 length ) : m_pFile( NULL )
 {
-#ifdef WIN32
 	int err = fopen_s( &m_pFile, ( std::string( APP_ROOT ) + filename ).c_str(), access );
 	m_fileName = std::string( APP_ROOT ) + filename;
-#else
-	char temp_file_name[ 2048 ];
-	ConvertFilePath( filename.c_str(), temp_file_name );
-	m_pFile = fopen( temp_file_name, access );
-	m_fileName = temp_file_name;
-#endif
 
 	m_bufferLength = length;		// length is non zero if loading from bank file
 	m_bufferStartOffset = offset;	// offset is non zero if loading from bank file 
@@ -206,7 +199,7 @@ int CFileData::Read( void* dest, u32 bytes )
 		if ( GetLength() > 0 )
 			bytes = min( bytes, GetLength( ) - m_bufferOffset );
 
-		int read = fread( dest, 1, bytes, m_pFile );
+		int read = (int)fread( dest, 1, (size_t)bytes, m_pFile );
 		m_bufferOffset += read;
 		return read;
 	}

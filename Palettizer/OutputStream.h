@@ -181,7 +181,7 @@ public:
 
 	COutputStream& COutputStream::operator << ( const std::string& t)
 	{ 
-		u32 length = t.size();
+		u32 length = (u32) t.size();
 		*this << length; 
 		return Append( t.c_str(), length ); 
 	}
